@@ -1,0 +1,13 @@
+$path = 'C:\Users\Jself\groups.txt'
+$groups = Get-Content $path
+$object = foreach($group in $groups){
+$users = get-adgroupmember $group | select -expandproperty 'SamAccountName'
+foreach($user in $users){
+try{
+  get-aduser $user | select-object Name,ObjectClass,SamAccountName,Enabled,@{n='GroupName';e={$Group}}
+  }
+catch{
+  Write-Output "$User was not found by the get-aduser command within $group"
+}
+}
+}$object | format-table -property * -AutoSize | Out-String -Width 4096 | Out-File .\groupmembership.txt
