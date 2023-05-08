@@ -1,10 +1,4 @@
-My goal is to install, test, and run a Trivy-Operator.
-
-The first step in this process is to create a vulnerable Kubernetes cluster for testing.
-
-MiniKube is a lightweight and local K8s.
-
-# Goal 1: Install minikube
+# Install minikube
 Refernces: https://minikube.sigs.k8s.io/docs/start/
 * Step 1:
     - `<brew install minikube>`
@@ -36,5 +30,3 @@ Refernces: https://minikube.sigs.k8s.io/docs/start/
         | Name       | Type      | Cluster-IP | External-IP | Ports(s) | Age   |
         | ---------- | --------- | ---------- | ----------- | -------- | ----- |
         | kubernetes | ClusterIP | `*.*.*.*`  | none        | 443/TCP  | 5m25s |
-
-# Goal 2: Install Vulnerable Web App
