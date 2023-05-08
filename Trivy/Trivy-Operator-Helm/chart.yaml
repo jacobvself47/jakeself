@@ -1,3 +1,4 @@
+# Chart.yaml file for the Trivy-Operator
 apiVersion: v2
 name: trivy-operator
 description: Keeps security report resources updated
