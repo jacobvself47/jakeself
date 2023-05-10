@@ -52,8 +52,6 @@ spec:
           containers:
             - name: kubectl
               image: bitnami/kubectl:latest 
-              command:
-                - /bin/sh
-                - -c
-                - kubectl scale deploy -n trivy-system --replicas=0 --all
+              command: ["/bin/sh"]
+              args: ["-c", "kubectl scale deploy -n trivy-system --replicas=0 --all"]
           restartPolicy: Never
