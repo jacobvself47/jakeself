@@ -1,0 +1,59 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: scale-down-trivy-system
+  namespace: trivy-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: scale-down-trivy-system
+  namespace: trivy-system
+rules:
+  - apiGroups: ["apps", "extensions"]
+    resources: ["deployments"]
+    resourceNames: ["trivy-operator"]
+    verbs: ["get", "patch", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: scale-down-trivy-system
+  namespace: trivy-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: scale-down-trivy-system
+subjects:
+  - kind: ServiceAccount
+    name: scale-down-trivy-system
+    namespace: trivy-system
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scale-down-trivy-system
+  namespace: trivy-system
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  concurrencyPolicy: Forbid
+  schedule: '*/5 * * * *'
+  jobTemplate:
+    spec:
+      backoffLimit: 2 
+      activeDeadlineSeconds: 600 
+      template:
+        spec:
+          serviceAccountName: scale-down-trivy-system
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl:latest 
+              command:
+                - /bin/sh
+                - -c
+                - kubectl scale deploy -n trivy-system --replicas=0 --all
+          restartPolicy: Never
